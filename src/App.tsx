@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import './App.css'
 import { getStickers, groupLetters } from './data/teams'
 import {
@@ -11,6 +11,7 @@ import {
 import type { Sticker, StickerStatus, Team } from './types'
 
 const TOTAL_STICKERS = 20
+const EDIT_PASSWORD = '123'
 
 type TeamStats = {
   total: number
@@ -54,6 +55,10 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [savingKey, setSavingKey] = useState<string | null>(null)
   const [isEditEnabled, setIsEditEnabled] = useState(false)
+  const [editPassword, setEditPassword] = useState('')
+  const [editPasswordError, setEditPasswordError] = useState<string | null>(
+    null,
+  )
 
   useEffect(() => {
     let isMounted = true
@@ -186,6 +191,26 @@ function App() {
     }
   }
 
+  function handleEditSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    if (isEditEnabled) {
+      setIsEditEnabled(false)
+      setEditPassword('')
+      setEditPasswordError(null)
+      return
+    }
+
+    if (editPassword === EDIT_PASSWORD) {
+      setIsEditEnabled(true)
+      setEditPassword('')
+      setEditPasswordError(null)
+      return
+    }
+
+    setEditPasswordError('Senha incorreta')
+  }
+
   async function handleStatusChange(
     teamId: string,
     sticker: Sticker,
@@ -231,23 +256,44 @@ function App() {
           <p className="app-kicker">MVP sem login</p>
           <div className="app-title-row">
             <h1>Painel de Controle de Figurinhas da Copa</h1>
-            <div className="edit-controls">
+            <form className="edit-controls" onSubmit={handleEditSubmit}>
               <span
                 className={`edit-status${isEditEnabled ? ' is-enabled' : ''}`}
               >
                 {isEditEnabled ? 'Edição liberada' : 'Bloqueado'}
               </span>
+              {!isEditEnabled && (
+                <label className="edit-password-label">
+                  <span>Senha</span>
+                  <input
+                    className="edit-password-input"
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="off"
+                    value={editPassword}
+                    onChange={(event) => {
+                      setEditPassword(event.target.value)
+                      setEditPasswordError(null)
+                    }}
+                    aria-invalid={Boolean(editPasswordError)}
+                  />
+                </label>
+              )}
               <button
                 className={`edit-toggle-button${
                   isEditEnabled ? ' is-enabled' : ''
                 }`}
-                type="button"
+                type="submit"
                 aria-pressed={isEditEnabled}
-                onClick={() => setIsEditEnabled((current) => !current)}
               >
                 {isEditEnabled ? 'Bloquear edição' : 'Habilitar edição'}
               </button>
-            </div>
+              {editPasswordError && (
+                <span className="edit-password-error" role="alert">
+                  {editPasswordError}
+                </span>
+              )}
+            </form>
           </div>
           <p>
             Selecione uma seleção, marque as figurinhas e acompanhe os totais
