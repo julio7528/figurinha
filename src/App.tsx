@@ -53,6 +53,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [savingKey, setSavingKey] = useState<string | null>(null)
+  const [isEditEnabled, setIsEditEnabled] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -164,6 +165,10 @@ function App() {
   }
 
   async function handleToggleFlag(teamId: string) {
+    if (!isEditEnabled) {
+      return
+    }
+
     const previousFlag = flags[teamId] ?? false
     const nextFlag = !previousFlag
 
@@ -186,6 +191,10 @@ function App() {
     sticker: Sticker,
     status: StickerStatus,
   ) {
+    if (!isEditEnabled) {
+      return
+    }
+
     const key = statusKey(teamId, sticker.key)
     const previousStatus = statuses[key]
 
@@ -216,11 +225,30 @@ function App() {
   const selectedStats = selectedTeam ? getTeamStats(selectedTeam.id) : null
 
   return (
-    <div className="app">
+    <div className={`app${isEditEnabled ? ' is-editing' : ' is-edit-locked'}`}>
       <header className="app-header">
         <div>
           <p className="app-kicker">MVP sem login</p>
-          <h1>Painel de Controle de Figurinhas da Copa</h1>
+          <div className="app-title-row">
+            <h1>Painel de Controle de Figurinhas da Copa</h1>
+            <div className="edit-controls">
+              <span
+                className={`edit-status${isEditEnabled ? ' is-enabled' : ''}`}
+              >
+                {isEditEnabled ? 'Edição liberada' : 'Bloqueado'}
+              </span>
+              <button
+                className={`edit-toggle-button${
+                  isEditEnabled ? ' is-enabled' : ''
+                }`}
+                type="button"
+                aria-pressed={isEditEnabled}
+                onClick={() => setIsEditEnabled((current) => !current)}
+              >
+                {isEditEnabled ? 'Bloquear edição' : 'Habilitar edição'}
+              </button>
+            </div>
+          </div>
           <p>
             Selecione uma seleção, marque as figurinhas e acompanhe os totais
             salvos no Supabase.
@@ -340,7 +368,9 @@ function App() {
                   }`}
                   type="button"
                   onClick={() => handleToggleFlag(selectedTeam.id)}
-                  disabled={savingKey === `${selectedTeam.id}:flag`}
+                  disabled={
+                    !isEditEnabled || savingKey === `${selectedTeam.id}:flag`
+                  }
                 >
                   {flags[selectedTeam.id] ? 'Seleção flagada' : 'Flagar seleção'}
                 </button>
@@ -403,7 +433,7 @@ function App() {
                                   status,
                                 )
                               }
-                              disabled={savingKey === key}
+                              disabled={!isEditEnabled || savingKey === key}
                             >
                               {statusLabels[status]}
                             </button>

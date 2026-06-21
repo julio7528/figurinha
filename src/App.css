@@ -24,11 +24,70 @@
   text-transform: uppercase;
 }
 
+.app-title-row {
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-controls {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  border: 1px solid rgba(248, 250, 252, 0.18);
+  border-radius: 999px;
+  padding: 0 12px;
+  background: rgba(248, 250, 252, 0.08);
+  color: #f5c1c1;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.edit-status.is-enabled {
+  color: #8fd2a4;
+}
+
 .app-header h1 {
   margin: 0;
   color: #ffffff;
   font-size: clamp(1.7rem, 3vw, 2.6rem);
   line-height: 1.05;
+}
+
+.edit-toggle-button {
+  flex: 0 0 auto;
+  min-height: 42px;
+  border: 1px solid rgba(248, 250, 252, 0.24);
+  border-radius: 8px;
+  padding: 0 16px;
+  background: #ffffff;
+  color: #0b1726;
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+  white-space: nowrap;
+}
+
+.edit-toggle-button:hover {
+  border-color: #8fd2a4;
+}
+
+.edit-toggle-button.is-enabled {
+  border-color: #8fd2a4;
+  background: #8fd2a4;
+  color: #071525;
 }
 
 .app-header p:last-child {
@@ -266,6 +325,11 @@
   opacity: 0.64;
 }
 
+.app.is-edit-locked .flag-button:disabled,
+.app.is-edit-locked .status-button:disabled {
+  cursor: not-allowed;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: minmax(116px, 0.48fr) repeat(3, minmax(0, 1fr));
@@ -448,6 +512,25 @@
 }
 
 @media (max-width: 640px) {
+  .app-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .edit-controls {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .edit-status {
+    justify-content: center;
+  }
+
+  .edit-toggle-button {
+    width: 100%;
+  }
+
   .app-shell {
     width: min(100% - 20px, 1180px);
     margin: 10px auto;
