@@ -10,7 +10,7 @@ import {
 } from './services/albumService'
 import type { Sticker, StickerStatus, Team } from './types'
 
-const TOTAL_STICKERS = 21
+const TOTAL_STICKERS = 20
 
 type TeamStats = {
   total: number
@@ -40,7 +40,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 function getStickerSummaryLabel(sticker: Sticker): string {
-  return sticker.type === 'team' ? 'TIME' : String(sticker.number)
+  return String(sticker.number)
 }
 
 function App() {

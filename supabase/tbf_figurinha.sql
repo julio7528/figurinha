@@ -5,7 +5,7 @@ create table if not exists public.tbf_figurinha (
   team_id text not null,
   is_flagged boolean,
   sticker_key text,
-  sticker_type text check (sticker_type is null or sticker_type in ('team', 'player')),
+  sticker_type text check (sticker_type is null or sticker_type = 'player'),
   sticker_number integer,
   status text check (status is null or status in ('tem', 'rep', 'nao')),
   updated_at timestamp with time zone default now(),

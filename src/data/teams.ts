@@ -136,15 +136,7 @@ export const teams: Team[] = baseTeams.map((team) => ({
 }))
 
 export function getStickers(): Sticker[] {
-  const stickers: Sticker[] = [
-    {
-      key: 'time',
-      type: 'team',
-      number: null,
-      title: 'Figurinha do Time',
-      code: 'TIME',
-    },
-  ]
+  const stickers: Sticker[] = []
 
   for (let i = 1; i <= 20; i += 1) {
     stickers.push({

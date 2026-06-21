@@ -11,7 +11,7 @@ export type Team = {
 
 export type StickerStatus = 'tem' | 'rep' | 'nao'
 
-export type StickerType = 'team' | 'player'
+export type StickerType = 'player'
 
 export type Sticker = {
   key: string
